@@ -125,5 +125,13 @@ CHECK_Ngay CHECK(NgayDK<= GETDATE())
 ALTER TABLE dbo.STB 
 ADD CHECK(LEFT(SoTB,2)='09')
 --7D Viết câu lệnh để thêm trường số điểm thưởng cho mỗi số thuê bao.
-ALTER TABLE dbo.STB
+--8A Đặt chỉ mục (Index) cho cột Tên khách hàng của bảng chứa thông tin khách hàng
+CREATE INDEX TenKhanhIndex ON dbo.KhachHang(TenKH)
+--8B Viết Các VIEW 
+CREATE VIEW View_KhachHang AS
+SELECT MaKH, TenKH, DiaChi FROM dbo.KhachHang
 
+CREATE VIEW View_KhachHang_ThueBao AS
+SELECT KhachHang.MaKH, KhachHang.TenKH, STB.SoTB FROM dbo.STB
+JOIN dbo.KhachHang
+ON KhachHang.MaKH = STB.MaKH

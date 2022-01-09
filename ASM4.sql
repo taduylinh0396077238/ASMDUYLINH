@@ -12,13 +12,17 @@ GO
 CREATE TABLE NguoiPhutrach (
 	MaNPT INT PRIMARY KEY,
 	TenNPT NVARCHAR(200)
+
 )
+ALTER TABLE dbo.NguoiPhutrach
+ADD NgaySinh DATETIME
 GO
 CREATE TABLE SanPham(
 	MaSSP CHAR(20) PRIMARY KEY,
 	NgaySX DATE,
 	MaLoaiSP CHAR(20) FOREIGN KEY REFERENCES dbo.LoaiSP(MaLoaiSP),
 	MaNPT INT FOREIGN KEY REFERENCES dbo.NguoiPhutrach(MaNPT)
+
 )
 INSERT INTO dbo.LoaiSP
 (
@@ -47,6 +51,10 @@ VALUES
 (   2,   -- MaNPT - int
     N'Vú Viết Qúy ' -- TenNPT - nvarchar(200)
     )
+SELECT* FROM dbo.NguoiPhutrach
+UPDATE dbo.NguoiPhutrach
+SET NgaySinh = '20030715'
+WHERE MaNPT = 1
 INSERT INTO dbo.SanPham
 (
     MaSSP,
@@ -113,3 +121,25 @@ CHECK_Ngay CHECK(NgaySX<= GETDATE())
 --7c Viết câu lệnh để thêm trường phiên bản của sản phẩm.
 ALTER TABLE dbo.SanPham
 ADD PhienBan INT 
+--8a Đặt chỉ mục (index) cho cột tên người chịu trách nhiệm
+CREATE  INDEX IX_TenNPT ON dbo.NguoiPhutrach(TenNPT)
+--8b1 View_SanPham: Hiển thị các thông tin Mã sản phẩm, Ngày sản xuất, Loại sản phẩm
+CREATE VIEW View_SanPham 
+AS 
+SELECT SanPham.MaSSP, SanPham.NgaySX, LoaiSP.TenLoaiSP FROM dbo.SanPham
+JOIN dbo.LoaiSP
+ON LoaiSP.MaLoaiSP = SanPham.MaLoaiSP
+--8b2 View_SanPham_NCTN: Hiển thị Mã sản phẩm, Ngày sản xuất, Người chịu trách nhiệm
+CREATE VIEW View_SanPham_NCTN
+AS
+SELECT SanPham.MaSSP, SanPham.NgaySX, NguoiPhuTrach.TenNPT FROM dbo.SanPham
+JOIN dbo.NguoiPhutrach
+ON NguoiPhutrach.MaNPT = SanPham.MaNPT
+--8B3 View_Top_SanPham: Hiển thị 5 sản phẩm mới nhất (mã sản phẩm, loại sản phẩm, ngày sản xuất)
+CREATE VIEW View_Top_SanPham
+AS
+SELECT TOP 2 SanPham.MaSSP, LoaiSP.TenLoaiSP, SanPham.NgaySX FROM dbo.SanPham
+JOIN dbo.LoaiSP
+ON LoaiSP.MaLoaiSP = SanPham.MaLoaiSP
+ORDER BY NgaySX DESC
+

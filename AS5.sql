@@ -66,33 +66,48 @@ WHERE Phone = '0396077238'
 SELECT * FROM dbo.ThongTinkh
 WHERE NgaySinh = '20030715'
 --6a Tìm số lượng số điện thoại của mỗi người trong danh bạ.
-SELECT *FROM dbo.ThongTinkh
-WHERE TenIDDB = (
-	SELECT TenIDDB FROM dbo.SĐT
-	WHERE Ten = 'Nguyễn Văn A '
-)
+SELECT Ten,COUNT(Phone) AS SDT FROM dbo.SĐT
+JOIN dbo.ThongTinkh 
+ON ThongTinkh.TenIDDB = SĐT.TenIDDB
+GROUP BY Ten 
 --6b Tìm tổng số người trong danh bạ sinh vào thang 01
-SELECT (MONTH(NgaySinh)) AS'month',COUNT(*) AS NUMBER_OF_BIRTHD
-FROM dbo.ThongTinkh
-WHERE (MONTH(NgaySinh)) = '1'
-GROUP BY (MONTH(NgaySinh))
+SELECT COUNT(TenIDDB) AS 'Người sinh tháng 1 ' FROM dbo.ThongTinkh
+WHERE MONTH(NgaySinh) = 1
 --6c Hiển thị toàn bộ thông tin về người, của từng số điện thoại.
 SELECT* FROM dbo.SĐT
 JOIN dbo.ThongTinkh
 ON ThongTinkh.TenIDDB = SĐT.TenIDDB
 --6D Hiển thị toàn bộ thông tin về người, của số điện thoại 123456789.
-SELECT* FROM dbo.SĐT
-JOIN dbo.ThongTinkh
+SELECT * FROM dbo.SĐT
+JOIN dbo.ThongTinkh 
 ON ThongTinkh.TenIDDB = SĐT.TenIDDB
-WHERE Ten = 'Nguyễn Văn B '
+WHERE Phone = '0396077238'
 --7A Viết câu lệnh để thay đổi trường ngày sinh là trước ngày hiện tại.
 ALTER TABLE dbo.ThongTinkh
 ADD CONSTRAINT
 CHECK_NGAY CHECK(NgaySinh<= GETDATE())
 --7B  Viết câu lệnh để xác định các trường khóa chính và khóa ngoại của các bảng.
+--7c Viết câu lệnh để thêm trường ngày bắt đầu liên lạc.
+ALTER TABLE dbo.SĐT
+ADD NgayLL DATE 
+--8A1 IX_HoTen : đặt chỉ mục cho cột Họ và tên
+CREATE INDEX IX_HoTen
+ON dbo.ThongTinkh(Ten)
+--8A2 IX_SoDienThoai: đặt chỉ mục cho cột Số điện thoại
+CREATE INDEX IX_SoDienThoai
+ON dbo.SĐT(Phone)
+--8B1 View_SoDienThoai: hiển thị các thông tin gồm Họ tên, Số điện thoại
+CREATE VIEW View_SoDienThoai
+AS
+SELECT ThongTinkh.Ten, SĐT.Phone FROM dbo.ThongTinkh
+JOIN dbo.SĐT
+ON SĐT.TenIDDB = ThongTinkh.TenIDDB
+--8B2 View_SinhNhat: Hiển thị những người có sinh nhật trong tháng hiện tại (Họ tên, Ngày sinh, Số điện thoại)
+CREATE VIEW View_SinhNhat
+AS
+SELECT Ten, NgaySinh, Phone FROM dbo.ThongTinkh
+JOIN dbo.SĐT
+ON SĐT.TenIDDB = ThongTinkh.TenIDDB
+WHERE  MONTH(NgaySinh) = MONTH(GETDATE())
 
 
-
-
-
-s

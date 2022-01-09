@@ -1,4 +1,4 @@
-﻿CREATE TABLE ASM6 
+﻿CREATE DATABASE ASM6 
 GO 
 USE ASM6
 GO 
@@ -169,3 +169,15 @@ SELECT TenLoai, COUNT(TenSach) AS 'SL'  FROM dbo.LoaiSach
 JOIN dbo.Sach
 ON Sach.MaLoai = LoaiSach.MaLoai
 GROUP BY TenLoai
+-- 16 Đặt chỉ mục (Index) cho trường tên sách
+CREATE INDEX IX_Sach ON dbo.Sach(TenSach)
+GO
+
+--17 Viết view lấy thông tin gồm: Mã sách, tên sách, tác giả, nhà xb và giá bán
+CREATE VIEW VIEW_thongTin
+AS
+SELECT MaSach, TenSach, TenTG, NhaXB, Gia FROM dbo.Tgia
+JOIN dbo.Sach
+ON Sach.MaTG = Tgia.MaTG
+JOIN dbo.NXB
+ON NXB.MaNhaXB = Sach.MaNhaXB

@@ -145,3 +145,16 @@ CHECK_GIA CHECK(Gia>0)
 ALTER TABLE dbo.SpHang
 	ADD CHECK(LEFT(Phone,1)='0')
 --7c Viết các câu lệnh để xác định các khóa ngoại và khóa chính của các bảng.
+--8a  Thiết lập chỉ mục (Index) cho các cột sau: Tên hàng và Mô tả hàng để tăng hiệu suất truy vấn dữ liệu từ 2 cột này
+CREATE INDEX IX_TenHang ON dbo.SpHang(TenHang)
+CREATE INDEX IX_MoTa ON dbo.DanhSachSP(MoTa)
+--8b Viết Các VIEW
+CREATE VIEW View_SanPham 
+SELECT MaSP, TenSP, Gia FROM dbo.DanhSachSP
+
+SELECT * FROM View_SanPham_Hang 
+
+CREATE VIEW View_SanPham_Hang AS
+SELECT DanhSachSP.MaSP, DanhSachSP.TenSP, SpHang.TenHang FROM dbo.DanhSachSP
+JOIN dbo.SpHang
+ON SpHang.MaHang = DanhSachSP.MaHang
