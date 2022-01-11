@@ -109,5 +109,39 @@ SELECT Ten, NgaySinh, Phone FROM dbo.ThongTinkh
 JOIN dbo.SĐT
 ON SĐT.TenIDDB = ThongTinkh.TenIDDB
 WHERE  MONTH(NgaySinh) = MONTH(GETDATE())
+GO
 
+--8c1 SP_Them_DanhBa: Thêm một người mới vào danh bạn
+CREATE PROCEDURE SP_Them_DanhBa
+	@TenIDDB INT,
+	@Ten NVARCHAR(200),
+	@DiaChi NVARCHAR(300),
+	@NgaySinh DATE
+AS
+BEGIN
+INSERT INTO dbo.ThongTinkh
+(
+    TenIDDB,
+    Ten,
+    DiaChi,
+    NgaySinh
+)
+VALUES
+(   @TenIDDB, -- TenIDDB - int
+    @Ten, -- Ten - nvarchar(200)
+    @DiaChi, -- DiaChi - nvarchar(300)
+    @NgaySinh  -- NgaySinh - date
+    )
+END
+EXEC dbo.SP_Them_DanhBa @TenIDDB = 0,            -- int
+                        @Ten = N'Giay',              -- nvarchar(200)
+                        @DiaChi = N'Thái Pinh',           -- nvarchar(300)
+                        @NgaySinh = '2022-01-11' -- date
+GO
+
+--8c2 SP_Tim_DanhBa: Tìm thông tin liên hệ của một người theo tên (gần đúng)
+CREATE PROCEDURE SP_Tim_DanhBa
+AS
+SELECT * FROM dbo.ThongTinkh 
+WHERE Ten LIKE '%A%'
 

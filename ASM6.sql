@@ -181,3 +181,72 @@ JOIN dbo.Sach
 ON Sach.MaTG = Tgia.MaTG
 JOIN dbo.NXB
 ON NXB.MaNhaXB = Sach.MaNhaXB
+GO
+
+--18 a SP_Them_Sach: thêm mới một cuốn sách
+CREATE PROCEDURE SP_Them_Sach
+	@MaSach INT,
+	@TenSach NVARCHAR(200),
+	@MaNhaXB INT,
+	@MaTG INT,
+	@MaLoai INT,
+	@NoiDung TEXT,
+	@NamXB DATE,
+	@LanDauXB INT,
+	@DiaChiNXB NVARCHAR(300),
+	@Gia INT,
+	@SoLuong INT
+AS
+BEGIN
+INSERT INTO dbo.Sach
+(
+    MaSach,
+    TenSach,
+    MaNhaXB,
+    MaTG,
+    MaLoai,
+    NoiDung,
+    NamXB,
+    LanDauXB,
+    DiaChiNXB,
+    Gia,
+    SoLuong
+)
+VALUES
+(   @MaSach,    -- MaSach - int
+    @TenSach, -- TenSach - nvarchar(200)
+    @MaNhaXB, -- MaNhaXB - int
+    @MaTG, -- MaTG - int
+    @MaLoai, -- MaLoai - int
+    @NoiDung, -- NoiDung - text
+    @NamXB, -- NamXB - date
+    @LanDauXB, -- LanDauXB - int
+    @DiaChiNXB, -- DiaChiNXB - nvarchar(300)
+    @Gia, -- Gia - int
+    @SoLuong  -- SoLuong - int
+    )
+END
+EXEC dbo.SP_Them_Sach @MaSach = 0,           -- int
+                      @TenSach = N'Van',        -- nvarchar(200)
+                      @MaNhaXB = 0,          -- int
+                      @MaTG = 0,             -- int
+                      @MaLoai = 0,           -- int
+                      @NoiDung = 'noi ve quyen sach',         -- text
+                      @NamXB = '2022-01-11', -- date
+                      @LanDauXB = 0,         -- int
+                      @DiaChiNXB = N'BA LAI',      -- nvarchar(300)
+                      @Gia = 0,              -- int
+                      @SoLuong = 0           -- int
+GO
+
+--18b SP_Tim_Sach: Tìm các cuốn sách theo từ khóa
+CREATE PROCEDURE SP_Tim_Sach
+AS
+SELECT* FROM dbo.Sach
+WHERE TenSach LIKE '%K%'
+GO
+
+--18C SP_Sach_ChuyenMuc: Liệt kê các cuốn sách theo mã chuyên mục
+CREATE PROCEDURE SP_Sach_ChuyenMuc
+AS
+SELECT *FROM dbo.Sach

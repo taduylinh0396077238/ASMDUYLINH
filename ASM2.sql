@@ -158,26 +158,3 @@ CREATE VIEW View_SanPham_Hang AS
 SELECT DanhSachSP.MaSP, DanhSachSP.TenSP, SpHang.TenHang FROM dbo.DanhSachSP
 JOIN dbo.SpHang
 ON SpHang.MaHang = DanhSachSP.MaHang
---8c1 SP_SanPham_TenHang: Liệt kê các sản phẩm với tên hãng truyền vào store
-GO
-CREATE PROCEDURE SP_SanPham_TenHang
-	@TenHang NVARCHAR(200)
-	
-AS
-SELECT TenSP FROM dbo.DanhSachSP
-JOIN dbo.SpHang
-ON SpHang.MaHang = DanhSachSP.MaHang
-WHERE TenHang = @TenHang
---8c2  SP_SanPham_Gia: Liệt kê các sản phẩm có giá bán lớn hơn hoặc bằng giá bán truyền vào
-GO
-CREATE PROCEDURE SP_SanPham_Gia
-	@Gia MONEY
-AS
-SELECT * FROM dbo.DanhSachSP
-WHERE Gia >= @Gia
---8c3 SP_SanPham_HetHang: Liệt kê các sản phẩm đã hết hàng (số lượng = 0)
-GO
-CREATE PROCEDURE SP_SanPham_HetHang
-AS 
-SELECT * FROM dbo.DanhSachSP
-WHERE SoLuong = 0

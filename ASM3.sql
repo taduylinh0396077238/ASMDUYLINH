@@ -135,3 +135,71 @@ CREATE VIEW View_KhachHang_ThueBao AS
 SELECT KhachHang.MaKH, KhachHang.TenKH, STB.SoTB FROM dbo.STB
 JOIN dbo.KhachHang
 ON KhachHang.MaKH = STB.MaKH
+--8c1 SP_TimKH_ThueBao: Hiển thị thông tin của khách hàng với số thuê bao nhập vào
+GO 
+CREATE PROCEDURE SP_TimKH_ThueBao
+	@SoTb CHAR(10)
+AS
+SELECT TenKH FROM dbo.STB
+JOIN dbo.KhachHang
+ON KhachHang.MaKH = STB.MaKH
+WHERE SoTB = @SoTB
+
+GO
+EXEC dbo.SP_TimKH_ThueBao @SoTb = '095558888' -- char(10)
+
+--8c2 ◦ SP_TimTB_KhachHang: Liệt kê các số điện thoại của khách hàng theo tên truyền vào
+GO 
+CREATE PROCEDURE SP_TimTB_KhachHang
+	@TenKH NVARCHAR(200)
+AS
+SELECT SoTB FROM dbo.STB
+JOIN dbo.KhachHang
+ON KhachHang.MaKH = STB.MaKH
+WHERE TenKH = @TenKH 
+--8C3 SP_ThemTB: Thêm mới một thuê bao cho khách hàng
+GO 
+CREATE PROCEDURE SP_ThemTB
+	@MaTB INT, 
+	@MaKH INT,
+	@LoaiTB INT,
+	@SoTB CHAR(10),
+	@NgayDK DATE,
+	@DiemThuong INT
+AS
+BEGIN
+INSERT INTO dbo.STB
+(
+    MaTB,
+    MaKH,
+    LoaiTB,
+    SoTB,
+    NgayDK,
+    DiemThuong
+)
+VALUES
+(   @MaTB,         -- MaTB - int
+    @MaKH,      -- MaKH - int
+    @LoaiTB,      -- LoaiTB - int
+    @SoTB,      -- SoTB - char(10)
+    @NgayDK, -- NgayDK - date
+    @DiemThuong       -- DiemThuong - int
+    )
+END
+EXEC dbo.SP_ThemTB @MaTB = 3,              -- int
+                   @MaKH = 0,              -- int
+                   @LoaiTB = 1,            -- int
+                   @SoTB = '096669990',             -- char(10)
+                   @NgayDK = '2022-01-11', -- date
+                   @DiemThuong = 0         -- int
+-- 8C4 SP_HuyTB_MaKH: Xóa bỏ thuê bao của khách hàng theo Mã khách hàng
+GO 
+CREATE PROCEDURE SP_HuyTB_MaKH
+	@SoTB CHAR(10),
+	@MaKH INT
+AS
+DELETE FROM dbo.STB
+WHERE MaKH = @MaKH AND SoTB = @SoTB
+
+
+
